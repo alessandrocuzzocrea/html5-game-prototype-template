@@ -45,4 +45,4 @@ jobs:
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
-          linux-amd64/butler push deploy rex64/wizard-golf:html5 --userversion-file .commit
+          linux-amd64/butler push deploy ${{ vars.ITCH_TARGET }}:html5 --userversion-file .commit
