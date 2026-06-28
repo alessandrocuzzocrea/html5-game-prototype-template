@@ -31,6 +31,10 @@ describe('Renderer', () => {
     expect(() => renderer.drawImage(image, 100, 100, 160, 80, '#ff0044')).not.toThrow();
   });
 
+  it('drawHello() does not throw', () => {
+    expect(() => renderer.drawHello()).not.toThrow();
+  });
+
   it('drawHitMarker() does not throw', () => {
     expect(() => renderer.drawHitMarker(480, 270)).not.toThrow();
   });

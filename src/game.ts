@@ -103,15 +103,11 @@ export class Game {
 
   draw(): void {
     this.renderer.clear();
-    if (!this.image || !this.image.complete) {
-      // Loading state
-      const ctx = (this.renderer as any).ctx as CanvasRenderingContext2D;
-      ctx.fillStyle = '#fff';
-      ctx.font = '24px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Loading...', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
-      return;
-    }
+
+    // Draw Hello World behind everything
+    this.renderer.drawHello();
+
+    if (!this.image || !this.image.complete) return;
 
     if (this.cornerFlash > 0) {
       this.renderer.drawHitMarker(

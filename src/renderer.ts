@@ -36,6 +36,15 @@ export class Renderer {
     ctx.restore();
   }
 
+  drawHello(): void {
+    const ctx = this.ctx;
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 48px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Hello World', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+  }
+
   drawHitMarker(x: number, y: number): void {
     const ctx = this.ctx;
     ctx.save();
