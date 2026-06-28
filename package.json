@@ -1,0 +1,24 @@
+{
+  "name": "wizard-golf",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --outfile=dist/game.js --format=iife",
+    "watch": "esbuild src/index.ts --bundle --outfile=dist/game.js --format=iife --watch",
+    "start": "npm run build && npx serve .",
+    "dev": "npm run build && concurrently \"npm:watch\" \"npx serve .\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "esbuild": "^0.28.1",
+    "jsdom": "^29.1.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

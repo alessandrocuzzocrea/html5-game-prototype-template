@@ -1,0 +1,48 @@
+name: Deploy to itch.io
+
+on:
+  workflow_run:
+    workflows: [Test]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Download butler
+        run: |
+          curl -L -o butler.zip https://github.com/itchio/butler/releases/download/v15.27.0/butler-linux-amd64.zip
+          unzip butler.zip
+          chmod +x linux-amd64/butler
+          linux-amd64/butler -V
+
+      - name: Prepare deploy directory
+        run: |
+          mkdir deploy
+          cp index.html style.css deploy/
+          cp -r dist deploy/
+          git rev-parse --short HEAD > .commit
+
+      - name: Push to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          linux-amd64/butler push deploy rex64/wizard-golf:html5 --userversion-file .commit
