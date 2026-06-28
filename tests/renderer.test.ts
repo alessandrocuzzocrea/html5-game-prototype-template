@@ -1,27 +1,38 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Renderer, CANVAS_WIDTH, CANVAS_HEIGHT } from '../src/renderer.js';
 
 describe('Renderer', () => {
-  function makeRenderer(): Renderer {
+  let renderer: Renderer;
+  let image: HTMLImageElement;
+
+  beforeEach(() => {
     const canvas = document.createElement('canvas');
     canvas.width = CANVAS_WIDTH;
     canvas.height = CANVAS_HEIGHT;
     const ctx = canvas.getContext('2d')!;
-    return new Renderer(ctx);
-  }
+    renderer = new Renderer(ctx);
+
+    image = new Image();
+    image.naturalWidth = 200;
+    image.naturalHeight = 100;
+    image.complete = true;
+  });
 
   it('constructs without throwing', () => {
-    expect(() => makeRenderer()).not.toThrow();
+    expect(() => new Renderer(image as any)).not.toThrow();
   });
 
   it('clear() does not throw', () => {
-    const renderer = makeRenderer();
     expect(() => renderer.clear()).not.toThrow();
   });
 
-  it('drawHello() does not throw', () => {
-    const renderer = makeRenderer();
-    expect(() => renderer.drawHello()).not.toThrow();
+  it('drawImage() does not throw with and without tint', () => {
+    expect(() => renderer.drawImage(image, 100, 100, 160, 80, null)).not.toThrow();
+    expect(() => renderer.drawImage(image, 100, 100, 160, 80, '#ff0044')).not.toThrow();
+  });
+
+  it('drawHitMarker() does not throw', () => {
+    expect(() => renderer.drawHitMarker(480, 270)).not.toThrow();
   });
 
   it('CANVAS_WIDTH is 960', () => {
