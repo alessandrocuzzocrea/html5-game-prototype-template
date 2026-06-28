@@ -27,7 +27,21 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Check deploy config
+        id: config
+        env:
+          KEY: ${{ secrets.BUTLER_API_KEY }}
+          TARGET: ${{ vars.ITCH_TARGET }}
+        run: |
+          if [ -n "$KEY" ] && [ -n "$TARGET" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping deploy: BUTLER_API_KEY or ITCH_TARGET not set"
+          fi
+
       - name: Download butler
+        if: steps.config.outputs.ready == 'true'
         run: |
           curl -L -o butler.zip https://github.com/itchio/butler/releases/download/v15.27.0/butler-linux-amd64.zip
           unzip butler.zip
@@ -35,6 +49,7 @@ jobs:
           linux-amd64/butler -V
 
       - name: Prepare deploy directory
+        if: steps.config.outputs.ready == 'true'
         run: |
           mkdir deploy
           cp index.html style.css deploy/
@@ -42,6 +57,7 @@ jobs:
           git rev-parse --short HEAD > .commit
 
       - name: Push to itch.io
+        if: steps.config.outputs.ready == 'true'
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
